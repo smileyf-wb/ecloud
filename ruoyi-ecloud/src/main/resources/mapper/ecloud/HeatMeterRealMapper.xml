@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ecloud.mapper.HeatMeterRealMapper">
+    
+    <resultMap type="HeatMeterReal" id="HeatMeterRealResult">
+        <result property="heatMeterId"    column="HEAT_METER_ID"    />
+        <result property="waterT"    column="WATER_T"    />
+        <result property="backWaterT"    column="BACK_WATER_T"    />
+        <result property="instantaneousWater"    column="INSTANTANEOUS_WATER"    />
+        <result property="instantaneousHeat"    column="INSTANTANEOUS_HEAT"    />
+        <result property="totalWater"    column="TOTAL_WATER"    />
+        <result property="totalHeat"    column="TOTAL_HEAT"    />
+        <result property="stationId"    column="STATION_ID"    />
+        <result property="updateTime"    column="UPDATE_TIME"    />
+        <result property="communicationStatus"    column="COMMUNICATION_STATUS"    />
+        <result property="meterType"    column="METER_TYPE"    />
+    </resultMap>
+
+    <sql id="selectHeatMeterRealVo">
+        select HEAT_METER_ID, WATER_T, BACK_WATER_T, INSTANTANEOUS_WATER, INSTANTANEOUS_HEAT, TOTAL_WATER, TOTAL_HEAT, STATION_ID, UPDATE_TIME, COMMUNICATION_STATUS, METER_TYPE from c_heat_meter_real
+    </sql>
+
+    <select id="selectHeatMeterRealList" parameterType="HeatMeterReal" resultMap="HeatMeterRealResult">
+        <include refid="selectHeatMeterRealVo"/>
+        <where>  
+
+            <if test="stationId != null "> and STATION_ID = #{stationId}</if>
+
+        </where>
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &gt;  date_sub(now(),interval 10 minute)
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &lt;now()
+    </select>
+    
+    <select id="selectHeatMeterRealById" parameterType="String" resultMap="HeatMeterRealResult">
+        <include refid="selectHeatMeterRealVo"/>
+        where HEAT_METER_ID = #{heatMeterId}
+    </select>
+        
+    <insert id="insertHeatMeterReal" parameterType="HeatMeterReal">
+        insert into c_heat_meter_real
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="heatMeterId != null">HEAT_METER_ID,</if>
+            <if test="waterT != null">WATER_T,</if>
+            <if test="backWaterT != null">BACK_WATER_T,</if>
+            <if test="instantaneousWater != null">INSTANTANEOUS_WATER,</if>
+            <if test="instantaneousHeat != null">INSTANTANEOUS_HEAT,</if>
+            <if test="totalWater != null">TOTAL_WATER,</if>
+            <if test="totalHeat != null">TOTAL_HEAT,</if>
+            <if test="stationId != null">STATION_ID,</if>
+            <if test="updateTime != null">UPDATE_TIME,</if>
+            <if test="communicationStatus != null">COMMUNICATION_STATUS,</if>
+            <if test="meterType != null">METER_TYPE,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="heatMeterId != null">#{heatMeterId},</if>
+            <if test="waterT != null">#{waterT},</if>
+            <if test="backWaterT != null">#{backWaterT},</if>
+            <if test="instantaneousWater != null">#{instantaneousWater},</if>
+            <if test="instantaneousHeat != null">#{instantaneousHeat},</if>
+            <if test="totalWater != null">#{totalWater},</if>
+            <if test="totalHeat != null">#{totalHeat},</if>
+            <if test="stationId != null">#{stationId},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="communicationStatus != null">#{communicationStatus},</if>
+            <if test="meterType != null">#{meterType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHeatMeterReal" parameterType="HeatMeterReal">
+        update c_heat_meter_real
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="waterT != null">WATER_T = #{waterT},</if>
+            <if test="backWaterT != null">BACK_WATER_T = #{backWaterT},</if>
+            <if test="instantaneousWater != null">INSTANTANEOUS_WATER = #{instantaneousWater},</if>
+            <if test="instantaneousHeat != null">INSTANTANEOUS_HEAT = #{instantaneousHeat},</if>
+            <if test="totalWater != null">TOTAL_WATER = #{totalWater},</if>
+            <if test="totalHeat != null">TOTAL_HEAT = #{totalHeat},</if>
+            <if test="stationId != null">STATION_ID = #{stationId},</if>
+            <if test="updateTime != null">UPDATE_TIME = #{updateTime},</if>
+            <if test="communicationStatus != null">COMMUNICATION_STATUS = #{communicationStatus},</if>
+            <if test="meterType != null">METER_TYPE = #{meterType},</if>
+        </trim>
+        where HEAT_METER_ID = #{heatMeterId}
+    </update>
+
+    <delete id="deleteHeatMeterRealById" parameterType="String">
+        delete from c_heat_meter_real where HEAT_METER_ID = #{heatMeterId}
+    </delete>
+
+    <delete id="deleteHeatMeterRealByIds" parameterType="String">
+        delete from c_heat_meter_real where HEAT_METER_ID in 
+        <foreach item="heatMeterId" collection="array" open="(" separator="," close=")">
+            #{heatMeterId}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ecloud.mapper.CmtMapper">
+    
+    <resultMap type="Cmt" id="CmtResult">
+        <result property="cmtId"    column="CMT_ID"    />
+        <result property="waterLevel"    column="WATER_LEVEL"    />
+        <result property="openValveLevel"    column="OPEN_VALVE_LEVEL"    />
+        <result property="closeValveLevel"    column="CLOSE_VALVE_LEVEL"    />
+        <result property="waterLevelMax"    column="WATER_LEVEL_MAX"    />
+        <result property="waterLevelMin"    column="WATER_LEVEL_MIN"    />
+        <result property="valveStatusCmd"    column="VALVE_STATUS_CMD"    />
+        <result property="stationId"    column="STATION_ID"    />
+    </resultMap>
+
+    <sql id="selectCmtVo">
+        select CMT_ID, WATER_LEVEL, OPEN_VALVE_LEVEL, CLOSE_VALVE_LEVEL, WATER_LEVEL_MAX, WATER_LEVEL_MIN, VALVE_STATUS_CMD, STATION_ID from c_cmt
+    </sql>
+
+    <select id="selectCmtList" parameterType="Cmt" resultMap="CmtResult">
+        <include refid="selectCmtVo"/>
+        <where>
+            <if test="stationId != null  and stationId != ''"> and STATION_ID = #{stationId}</if>
+        </where>
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &gt;  date_sub(now(),interval 10 minute)
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &lt;now()
+    </select>
+    
+    <select id="selectCmtById" parameterType="String" resultMap="CmtResult">
+        <include refid="selectCmtVo"/>
+        where CMT_ID = #{cmtId}
+    </select>
+        
+    <insert id="insertCmt" parameterType="Cmt">
+        insert into c_cmt
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cmtId != null">CMT_ID,</if>
+            <if test="waterLevel != null">WATER_LEVEL,</if>
+            <if test="openValveLevel != null">OPEN_VALVE_LEVEL,</if>
+            <if test="closeValveLevel != null">CLOSE_VALVE_LEVEL,</if>
+            <if test="waterLevelMax != null">WATER_LEVEL_MAX,</if>
+            <if test="waterLevelMin != null">WATER_LEVEL_MIN,</if>
+            <if test="valveStatusCmd != null">VALVE_STATUS_CMD,</if>
+            <if test="stationId != null">STATION_ID,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cmtId != null">#{cmtId},</if>
+            <if test="waterLevel != null">#{waterLevel},</if>
+            <if test="openValveLevel != null">#{openValveLevel},</if>
+            <if test="closeValveLevel != null">#{closeValveLevel},</if>
+            <if test="waterLevelMax != null">#{waterLevelMax},</if>
+            <if test="waterLevelMin != null">#{waterLevelMin},</if>
+            <if test="valveStatusCmd != null">#{valveStatusCmd},</if>
+            <if test="stationId != null">#{stationId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCmt" parameterType="Cmt">
+        update c_cmt
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="waterLevel != null">WATER_LEVEL = #{waterLevel},</if>
+            <if test="openValveLevel != null">OPEN_VALVE_LEVEL = #{openValveLevel},</if>
+            <if test="closeValveLevel != null">CLOSE_VALVE_LEVEL = #{closeValveLevel},</if>
+            <if test="waterLevelMax != null">WATER_LEVEL_MAX = #{waterLevelMax},</if>
+            <if test="waterLevelMin != null">WATER_LEVEL_MIN = #{waterLevelMin},</if>
+            <if test="valveStatusCmd != null">VALVE_STATUS_CMD = #{valveStatusCmd},</if>
+            <if test="stationId != null">STATION_ID = #{stationId},</if>
+        </trim>
+        where CMT_ID = #{cmtId}
+    </update>
+
+    <delete id="deleteCmtById" parameterType="String">
+        delete from c_cmt where CMT_ID = #{cmtId}
+    </delete>
+
+    <delete id="deleteCmtByIds" parameterType="String">
+        delete from c_cmt where CMT_ID in 
+        <foreach item="cmtId" collection="array" open="(" separator="," close=")">
+            #{cmtId}
+        </foreach>
+    </delete>
+    
+</mapper>

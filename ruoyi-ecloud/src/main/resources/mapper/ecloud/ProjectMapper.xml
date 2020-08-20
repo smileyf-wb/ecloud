@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ecloud.mapper.ProjectMapper">
+    
+    <resultMap type="Project" id="ProjectResult">
+        <result property="pkProjectId"    column="PK_PROJECT_ID"    />
+        <result property="projectName"    column="PROJECT_NAME"    />
+        <result property="projectStationId"    column="PROJECT_STATION_ID"    />
+    </resultMap>
+
+    <sql id="selectProjectVo">
+        select PK_PROJECT_ID, PROJECT_NAME, PROJECT_STATION_ID from c_project
+    </sql>
+
+    <select id="selectProjectList" parameterType="Project" resultMap="ProjectResult">
+        <include refid="selectProjectVo"/>
+        <where>  
+            <if test="projectName != null  and projectName != ''">  and PROJECT_NAME like concat('%', #{projectName}, '%')</if>
+            <if test="projectStationId != null  and projectStationId != ''"> and PROJECT_STATION_ID = #{projectStationId}</if>
+        </where>
+    </select>
+    
+    <select id="selectProjectById" parameterType="String" resultMap="ProjectResult">
+        <include refid="selectProjectVo"/>
+        where PK_PROJECT_ID = #{pkProjectId}
+    </select>
+        
+    <insert id="insertProject" parameterType="Project">
+        insert into c_project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkProjectId != null">PK_PROJECT_ID,</if>
+            <if test="projectName != null">PROJECT_NAME,</if>
+            <if test="projectStationId != null">PROJECT_STATION_ID,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkProjectId != null">#{pkProjectId},</if>
+            <if test="projectName != null">#{projectName},</if>
+            <if test="projectStationId != null">#{projectStationId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProject" parameterType="Project">
+        update c_project
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectName != null">PROJECT_NAME = #{projectName},</if>
+            <if test="projectStationId != null">PROJECT_STATION_ID = #{projectStationId},</if>
+        </trim>
+        where PK_PROJECT_ID = #{pkProjectId}
+    </update>
+
+    <delete id="deleteProjectById" parameterType="String">
+        delete from c_project where PK_PROJECT_ID = #{pkProjectId}
+    </delete>
+
+    <delete id="deleteProjectByIds" parameterType="String">
+        delete from c_project where PK_PROJECT_ID in 
+        <foreach item="pkProjectId" collection="array" open="(" separator="," close=")">
+            #{pkProjectId}
+        </foreach>
+    </delete>
+    
+</mapper>

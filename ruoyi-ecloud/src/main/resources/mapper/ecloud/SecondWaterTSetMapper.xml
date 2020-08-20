@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ecloud.mapper.SecondWaterTSetMapper">
+    
+    <resultMap type="SecondWaterTSet" id="SecondWaterTSetResult">
+        <result property="climateCompensationtId"    column="CLIMATE_COMPENSATIONT_ID"    />
+        <result property="outdoorT"    column="OUTDOOR_T"    />
+        <result property="secondWaterT"    column="SECOND_WATER_T"    />
+        <result property="stationId"    column="STATION_ID"    />
+    </resultMap>
+
+    <sql id="selectSecondWaterTSetVo">
+        select CLIMATE_COMPENSATIONT_ID, OUTDOOR_T, SECOND_WATER_T, STATION_ID from c_second_water_t_set
+    </sql>
+
+    <select id="selectSecondWaterTSetList" parameterType="SecondWaterTSet" resultMap="SecondWaterTSetResult">
+        <include refid="selectSecondWaterTSetVo"/>
+        <where>  
+
+            <if test="stationId != null  and stationId != ''"> and STATION_ID = #{stationId}</if>
+        </where>
+    </select>
+    
+    <select id="selectSecondWaterTSetById" parameterType="String" resultMap="SecondWaterTSetResult">
+        <include refid="selectSecondWaterTSetVo"/>
+        where CLIMATE_COMPENSATIONT_ID = #{climateCompensationtId}
+    </select>
+        
+    <insert id="insertSecondWaterTSet" parameterType="SecondWaterTSet">
+        insert into c_second_water_t_set
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="climateCompensationtId != null">CLIMATE_COMPENSATIONT_ID,</if>
+            <if test="outdoorT != null">OUTDOOR_T,</if>
+            <if test="secondWaterT != null">SECOND_WATER_T,</if>
+            <if test="stationId != null">STATION_ID,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="climateCompensationtId != null">#{climateCompensationtId},</if>
+            <if test="outdoorT != null">#{outdoorT},</if>
+            <if test="secondWaterT != null">#{secondWaterT},</if>
+            <if test="stationId != null">#{stationId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSecondWaterTSet" parameterType="SecondWaterTSet">
+        update c_second_water_t_set
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="outdoorT != null">OUTDOOR_T = #{outdoorT},</if>
+            <if test="secondWaterT != null">SECOND_WATER_T = #{secondWaterT},</if>
+            <if test="stationId != null">STATION_ID = #{stationId},</if>
+        </trim>
+        where CLIMATE_COMPENSATIONT_ID = #{climateCompensationtId}
+    </update>
+
+    <delete id="deleteSecondWaterTSetById" parameterType="String">
+        delete from c_second_water_t_set where CLIMATE_COMPENSATIONT_ID = #{climateCompensationtId}
+    </delete>
+
+    <delete id="deleteSecondWaterTSetByIds" parameterType="String">
+        delete from c_second_water_t_set where CLIMATE_COMPENSATIONT_ID in 
+        <foreach item="climateCompensationtId" collection="array" open="(" separator="," close=")">
+            #{climateCompensationtId}
+        </foreach>
+    </delete>
+    
+</mapper>

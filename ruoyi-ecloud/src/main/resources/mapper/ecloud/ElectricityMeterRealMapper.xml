@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ecloud.mapper.ElectricityMeterRealMapper">
+    
+    <resultMap type="ElectricityMeterReal" id="ElectricityMeterRealResult">
+        <result property="ua"    column="UA"    />
+        <result property="ub"    column="UB"    />
+        <result property="uc"    column="UC"    />
+        <result property="ia"    column="IA"    />
+        <result property="ic"    column="IC"    />
+        <result property="ib"    column="IB"    />
+        <result property="power"    column="POWER"    />
+        <result property="stationId"    column="STATION_ID"    />
+        <result property="meterId"    column="METER_ID"    />
+        <result property="updateTime"    column="UPDATE_TIME"    />
+    </resultMap>
+
+    <sql id="selectElectricityMeterRealVo">
+        select UA, UB, UC, IA, IC, IB, POWER, STATION_ID, METER_ID, UPDATE_TIME from c_electricity_meter_real
+    </sql>
+
+    <select id="selectElectricityMeterRealList" parameterType="ElectricityMeterReal" resultMap="ElectricityMeterRealResult">
+        <include refid="selectElectricityMeterRealVo"/>
+        <where>
+            <if test="stationId != null  and stationId != ''"> and STATION_ID = #{stationId}</if>
+        </where>
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &gt;  date_sub(now(),interval 10 minute)
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &lt;now()
+    </select>
+    
+    <select id="selectElectricityMeterRealById" parameterType="String" resultMap="ElectricityMeterRealResult">
+        <include refid="selectElectricityMeterRealVo"/>
+        where METER_ID = #{meterId}
+    </select>
+        
+    <insert id="insertElectricityMeterReal" parameterType="ElectricityMeterReal">
+        insert into c_electricity_meter_real
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ua != null">UA,</if>
+            <if test="ub != null">UB,</if>
+            <if test="uc != null">UC,</if>
+            <if test="ia != null">IA,</if>
+            <if test="ic != null">IC,</if>
+            <if test="ib != null">IB,</if>
+            <if test="power != null">POWER,</if>
+            <if test="stationId != null">STATION_ID,</if>
+            <if test="meterId != null">METER_ID,</if>
+            <if test="updateTime != null">UPDATE_TIME,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ua != null">#{ua},</if>
+            <if test="ub != null">#{ub},</if>
+            <if test="uc != null">#{uc},</if>
+            <if test="ia != null">#{ia},</if>
+            <if test="ic != null">#{ic},</if>
+            <if test="ib != null">#{ib},</if>
+            <if test="power != null">#{power},</if>
+            <if test="stationId != null">#{stationId},</if>
+            <if test="meterId != null">#{meterId},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateElectricityMeterReal" parameterType="ElectricityMeterReal">
+        update c_electricity_meter_real
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ua != null">UA = #{ua},</if>
+            <if test="ub != null">UB = #{ub},</if>
+            <if test="uc != null">UC = #{uc},</if>
+            <if test="ia != null">IA = #{ia},</if>
+            <if test="ic != null">IC = #{ic},</if>
+            <if test="ib != null">IB = #{ib},</if>
+            <if test="power != null">POWER = #{power},</if>
+            <if test="stationId != null">STATION_ID = #{stationId},</if>
+            <if test="updateTime != null">UPDATE_TIME = #{updateTime},</if>
+        </trim>
+        where METER_ID = #{meterId}
+    </update>
+
+    <delete id="deleteElectricityMeterRealById" parameterType="String">
+        delete from c_electricity_meter_real where METER_ID = #{meterId}
+    </delete>
+
+    <delete id="deleteElectricityMeterRealByIds" parameterType="String">
+        delete from c_electricity_meter_real where METER_ID in 
+        <foreach item="meterId" collection="array" open="(" separator="," close=")">
+            #{meterId}
+        </foreach>
+    </delete>
+    
+</mapper>

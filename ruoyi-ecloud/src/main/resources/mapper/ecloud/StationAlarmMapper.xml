@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ecloud.mapper.StationAlarmMapper">
+    
+    <resultMap type="StationAlarm" id="StationAlarmResult">
+        <result property="id"    column="ID"    />
+        <result property="stationId"    column="STATION_ID"    />
+        <result property="onceWaterTAlarm"    column="ONCE_WATER_T_ALARM"    />
+        <result property="secondWaterTAlarm"    column="SECOND_WATER_T_ALARM"    />
+        <result property="onceBackWaterTAlarm"    column="ONCE_BACK_WATER_T_ALARM"    />
+        <result property="secondBackWaterTAlarm"    column="SECOND_BACK_WATER_T_ALARM"    />
+        <result property="onceWaterPAlarm"    column="ONCE_WATER_P_ALARM"    />
+        <result property="onceBackWaterPAlarm"    column="ONCE_BACK_WATER_P_ALARM"    />
+        <result property="secondWaterPAlarm"    column="SECOND_WATER_P_ALARM"    />
+        <result property="secondBackWaterPAlarm"    column="SECOND_BACK_WATER_P_ALARM"    />
+        <result property="instantaneousWaterAlarm"    column="INSTANTANEOUS_WATER_ALARM"    />
+        <result property="instantaneousHeatAlarm"    column="INSTANTANEOUS_HEAT_ALARM"    />
+        <result property="itnstantaneousAddWaterAlarm"    column="ITNSTANTANEOUS_ADD_WATER_ALARM"    />
+        <result property="updateTime"    column="UPDATE_TIME"    />
+    </resultMap>
+
+    <sql id="selectStationAlarmVo">
+        select ID, STATION_ID, ONCE_WATER_T_ALARM, SECOND_WATER_T_ALARM, ONCE_BACK_WATER_T_ALARM, SECOND_BACK_WATER_T_ALARM, ONCE_WATER_P_ALARM, ONCE_BACK_WATER_P_ALARM, SECOND_WATER_P_ALARM, SECOND_BACK_WATER_P_ALARM, INSTANTANEOUS_WATER_ALARM, INSTANTANEOUS_HEAT_ALARM, ITNSTANTANEOUS_ADD_WATER_ALARM, UPDATE_TIME from c_station_alarm
+    </sql>
+
+    <select id="selectStationAlarmList" parameterType="StationAlarm" resultMap="StationAlarmResult">
+        <include refid="selectStationAlarmVo"/>
+        <where>
+            <if test="stationId != null "> and STATION_ID = #{stationId}</if>
+        </where>
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &gt;  date_sub(now(),interval 10 minute)
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &lt;now()
+    </select>
+    
+    <select id="selectStationAlarmById" parameterType="String" resultMap="StationAlarmResult">
+        <include refid="selectStationAlarmVo"/>
+        where ID = #{id}
+    </select>
+        
+    <insert id="insertStationAlarm" parameterType="StationAlarm">
+        insert into c_station_alarm
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">ID,</if>
+            <if test="stationId != null">STATION_ID,</if>
+            <if test="onceWaterTAlarm != null">ONCE_WATER_T_ALARM,</if>
+            <if test="secondWaterTAlarm != null">SECOND_WATER_T_ALARM,</if>
+            <if test="onceBackWaterTAlarm != null">ONCE_BACK_WATER_T_ALARM,</if>
+            <if test="secondBackWaterTAlarm != null">SECOND_BACK_WATER_T_ALARM,</if>
+            <if test="onceWaterPAlarm != null">ONCE_WATER_P_ALARM,</if>
+            <if test="onceBackWaterPAlarm != null">ONCE_BACK_WATER_P_ALARM,</if>
+            <if test="secondWaterPAlarm != null">SECOND_WATER_P_ALARM,</if>
+            <if test="secondBackWaterPAlarm != null">SECOND_BACK_WATER_P_ALARM,</if>
+            <if test="instantaneousWaterAlarm != null">INSTANTANEOUS_WATER_ALARM,</if>
+            <if test="instantaneousHeatAlarm != null">INSTANTANEOUS_HEAT_ALARM,</if>
+            <if test="itnstantaneousAddWaterAlarm != null">ITNSTANTANEOUS_ADD_WATER_ALARM,</if>
+            <if test="updateTime != null">UPDATE_TIME,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="stationId != null">#{stationId},</if>
+            <if test="onceWaterTAlarm != null">#{onceWaterTAlarm},</if>
+            <if test="secondWaterTAlarm != null">#{secondWaterTAlarm},</if>
+            <if test="onceBackWaterTAlarm != null">#{onceBackWaterTAlarm},</if>
+            <if test="secondBackWaterTAlarm != null">#{secondBackWaterTAlarm},</if>
+            <if test="onceWaterPAlarm != null">#{onceWaterPAlarm},</if>
+            <if test="onceBackWaterPAlarm != null">#{onceBackWaterPAlarm},</if>
+            <if test="secondWaterPAlarm != null">#{secondWaterPAlarm},</if>
+            <if test="secondBackWaterPAlarm != null">#{secondBackWaterPAlarm},</if>
+            <if test="instantaneousWaterAlarm != null">#{instantaneousWaterAlarm},</if>
+            <if test="instantaneousHeatAlarm != null">#{instantaneousHeatAlarm},</if>
+            <if test="itnstantaneousAddWaterAlarm != null">#{itnstantaneousAddWaterAlarm},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStationAlarm" parameterType="StationAlarm">
+        update c_station_alarm
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stationId != null">STATION_ID = #{stationId},</if>
+            <if test="onceWaterTAlarm != null">ONCE_WATER_T_ALARM = #{onceWaterTAlarm},</if>
+            <if test="secondWaterTAlarm != null">SECOND_WATER_T_ALARM = #{secondWaterTAlarm},</if>
+            <if test="onceBackWaterTAlarm != null">ONCE_BACK_WATER_T_ALARM = #{onceBackWaterTAlarm},</if>
+            <if test="secondBackWaterTAlarm != null">SECOND_BACK_WATER_T_ALARM = #{secondBackWaterTAlarm},</if>
+            <if test="onceWaterPAlarm != null">ONCE_WATER_P_ALARM = #{onceWaterPAlarm},</if>
+            <if test="onceBackWaterPAlarm != null">ONCE_BACK_WATER_P_ALARM = #{onceBackWaterPAlarm},</if>
+            <if test="secondWaterPAlarm != null">SECOND_WATER_P_ALARM = #{secondWaterPAlarm},</if>
+            <if test="secondBackWaterPAlarm != null">SECOND_BACK_WATER_P_ALARM = #{secondBackWaterPAlarm},</if>
+            <if test="instantaneousWaterAlarm != null">INSTANTANEOUS_WATER_ALARM = #{instantaneousWaterAlarm},</if>
+            <if test="instantaneousHeatAlarm != null">INSTANTANEOUS_HEAT_ALARM = #{instantaneousHeatAlarm},</if>
+            <if test="itnstantaneousAddWaterAlarm != null">ITNSTANTANEOUS_ADD_WATER_ALARM = #{itnstantaneousAddWaterAlarm},</if>
+            <if test="updateTime != null">UPDATE_TIME = #{updateTime},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteStationAlarmById" parameterType="String">
+        delete from c_station_alarm where ID = #{id}
+    </delete>
+
+    <delete id="deleteStationAlarmByIds" parameterType="String">
+        delete from c_station_alarm where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

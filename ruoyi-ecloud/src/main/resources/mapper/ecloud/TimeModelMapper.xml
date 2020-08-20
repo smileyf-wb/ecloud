@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ecloud.mapper.TimeModelMapper">
+    
+    <resultMap type="TimeModel" id="TimeModelResult">
+        <result property="timeModelId"    column="TIME_MODEL_ID"    />
+        <result property="time"    column="TIME"    />
+        <result property="week"    column="WEEK"    />
+        <result property="model"    column="MODEL"    />
+        <result property="stationId"    column="STATION_ID"    />
+    </resultMap>
+
+    <sql id="selectTimeModelVo">
+        select TIME_MODEL_ID,STATION_ID, TIME, WEEK, MODEL from c_time_model
+    </sql>
+
+    <select id="selectTimeModelList" parameterType="TimeModel" resultMap="TimeModelResult">
+        <include refid="selectTimeModelVo"/>
+        <where>  
+            <if test="stationId != null  and stationId != ''"> and STATION_ID = #{stationId}</if>
+
+        </where>
+    </select>
+    
+    <select id="selectTimeModelById" parameterType="String" resultMap="TimeModelResult">
+        <include refid="selectTimeModelVo"/>
+        where TIME_MODEL_ID = #{timeModelId}
+    </select>
+        
+    <insert id="insertTimeModel" parameterType="TimeModel">
+        insert into c_time_model
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="timeModelId != null">TIME_MODEL_ID,</if>
+            <if test="time != null">TIME,</if>
+            <if test="week != null">WEEK,</if>
+            <if test="model != null">MODEL,</if>
+            <if test="stationId != null">STATION_ID,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="timeModelId != null">#{timeModelId},</if>
+            <if test="time != null">#{time},</if>
+            <if test="week != null">#{week},</if>
+            <if test="model != null">#{model},</if>
+            <if test="stationId != null">#{stationId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTimeModel" parameterType="TimeModel">
+        update c_time_model
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="time != null">TIME = #{time},</if>
+            <if test="week != null">WEEK = #{week},</if>
+            <if test="model != null">MODEL = #{model},</if>
+            <if test="stationId != null">#{stationId},</if>
+        </trim>
+        where TIME_MODEL_ID = #{timeModelId}
+    </update>
+
+    <delete id="deleteTimeModelById" parameterType="String">
+        delete from c_time_model where TIME_MODEL_ID = #{timeModelId}
+    </delete>
+
+    <delete id="deleteTimeModelByIds" parameterType="String">
+        delete from c_time_model where TIME_MODEL_ID in 
+        <foreach item="timeModelId" collection="array" open="(" separator="," close=")">
+            #{timeModelId}
+        </foreach>
+    </delete>
+    
+</mapper>

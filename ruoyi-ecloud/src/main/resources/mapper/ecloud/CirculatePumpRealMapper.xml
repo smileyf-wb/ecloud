@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ecloud.mapper.CirculatePumpRealMapper">
+    
+    <resultMap type="CirculatePumpReal" id="CirculatePumpRealResult">
+        <result property="circulatePumpId"    column="CIRCULATE_PUMP_ID"    />
+        <result property="runStatus"    column="RUN_STATUS"    />
+        <result property="runModel"    column="RUN_MODEL"    />
+        <result property="controlOrder"    column="CONTROL_ORDER"    />
+        <result property="rateOutput"    column="RATE_OUTPUT"    />
+        <result property="rateFeedBack"    column="RATE_FEED_BACK"    />
+        <result property="runTime"    column="RUN_TIME"    />
+        <result property="waterP"    column="WATER_P"    />
+        <result property="backWaterP"    column="BACK_WATER_P"    />
+        <result property="waterMax"    column="WATER_MAX"    />
+        <result property="backWaterMin"    column="BACK_WATER_MIN"    />
+        <result property="powerOffOperation"    column="POWER_OFF_OPERATION"    />
+        <result property="stationId"    column="STATION_ID"    />
+        <result property="updateTime"    column="UPDATE_TIME"    />
+        <result property="rateSet"    column="RATE_SET"    />
+        <result property="dayModel"    column="DAY_MODEL"    />
+        <result property="neightModel"    column="NEIGHT_MODEL"    />
+        <result property="holidayModel"    column="HOLIDAY_MODEL"    />
+    </resultMap>
+
+    <sql id="selectCirculatePumpRealVo">
+        select CIRCULATE_PUMP_ID, RUN_STATUS, RUN_MODEL, CONTROL_ORDER, RATE_OUTPUT, RATE_FEED_BACK, RUN_TIME, WATER_P, BACK_WATER_P, WATER_MAX, BACK_WATER_MIN, POWER_OFF_OPERATION, STATION_ID, UPDATE_TIME, RATE_SET, DAY_MODEL, NEIGHT_MODEL, HOLIDAY_MODEL from c_circulate_pump_real
+    </sql>
+
+    <select id="selectCirculatePumpRealList" parameterType="CirculatePumpReal" resultMap="CirculatePumpRealResult">
+        <include refid="selectCirculatePumpRealVo"/>
+        <where>
+            <if test="stationId != null "> and STATION_ID = #{stationId}</if>
+        </where>
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &gt;  date_sub(now(),interval 10 minute)
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &lt;now()
+    </select>
+    
+    <select id="selectCirculatePumpRealById" parameterType="String" resultMap="CirculatePumpRealResult">
+        <include refid="selectCirculatePumpRealVo"/>
+        where CIRCULATE_PUMP_ID = #{circulatePumpId}
+    </select>
+        
+    <insert id="insertCirculatePumpReal" parameterType="CirculatePumpReal">
+        insert into c_circulate_pump_real
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="circulatePumpId != null">CIRCULATE_PUMP_ID,</if>
+            <if test="runStatus != null">RUN_STATUS,</if>
+            <if test="runModel != null">RUN_MODEL,</if>
+            <if test="controlOrder != null">CONTROL_ORDER,</if>
+            <if test="rateOutput != null">RATE_OUTPUT,</if>
+            <if test="rateFeedBack != null">RATE_FEED_BACK,</if>
+            <if test="runTime != null">RUN_TIME,</if>
+            <if test="waterP != null">WATER_P,</if>
+            <if test="backWaterP != null">BACK_WATER_P,</if>
+            <if test="waterMax != null">WATER_MAX,</if>
+            <if test="backWaterMin != null">BACK_WATER_MIN,</if>
+            <if test="powerOffOperation != null">POWER_OFF_OPERATION,</if>
+            <if test="stationId != null">STATION_ID,</if>
+            <if test="updateTime != null">UPDATE_TIME,</if>
+            <if test="rateSet != null">RATE_SET,</if>
+            <if test="dayModel != null">DAY_MODEL,</if>
+            <if test="neightModel != null">NEIGHT_MODEL,</if>
+            <if test="holidayModel != null">HOLIDAY_MODEL,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="circulatePumpId != null">#{circulatePumpId},</if>
+            <if test="runStatus != null">#{runStatus},</if>
+            <if test="runModel != null">#{runModel},</if>
+            <if test="controlOrder != null">#{controlOrder},</if>
+            <if test="rateOutput != null">#{rateOutput},</if>
+            <if test="rateFeedBack != null">#{rateFeedBack},</if>
+            <if test="runTime != null">#{runTime},</if>
+            <if test="waterP != null">#{waterP},</if>
+            <if test="backWaterP != null">#{backWaterP},</if>
+            <if test="waterMax != null">#{waterMax},</if>
+            <if test="backWaterMin != null">#{backWaterMin},</if>
+            <if test="powerOffOperation != null">#{powerOffOperation},</if>
+            <if test="stationId != null">#{stationId},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="rateSet != null">#{rateSet},</if>
+            <if test="dayModel != null">#{dayModel},</if>
+            <if test="neightModel != null">#{neightModel},</if>
+            <if test="holidayModel != null">#{holidayModel},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCirculatePumpReal" parameterType="CirculatePumpReal">
+        update c_circulate_pump_real
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="runStatus != null">RUN_STATUS = #{runStatus},</if>
+            <if test="runModel != null">RUN_MODEL = #{runModel},</if>
+            <if test="controlOrder != null">CONTROL_ORDER = #{controlOrder},</if>
+            <if test="rateOutput != null">RATE_OUTPUT = #{rateOutput},</if>
+            <if test="rateFeedBack != null">RATE_FEED_BACK = #{rateFeedBack},</if>
+            <if test="runTime != null">RUN_TIME = #{runTime},</if>
+            <if test="waterP != null">WATER_P = #{waterP},</if>
+            <if test="backWaterP != null">BACK_WATER_P = #{backWaterP},</if>
+            <if test="waterMax != null">WATER_MAX = #{waterMax},</if>
+            <if test="backWaterMin != null">BACK_WATER_MIN = #{backWaterMin},</if>
+            <if test="powerOffOperation != null">POWER_OFF_OPERATION = #{powerOffOperation},</if>
+            <if test="stationId != null">STATION_ID = #{stationId},</if>
+            <if test="updateTime != null">UPDATE_TIME = #{updateTime},</if>
+            <if test="rateSet != null">RATE_SET = #{rateSet},</if>
+            <if test="dayModel != null">DAY_MODEL = #{dayModel},</if>
+            <if test="neightModel != null">NEIGHT_MODEL = #{neightModel},</if>
+            <if test="holidayModel != null">HOLIDAY_MODEL = #{holidayModel},</if>
+        </trim>
+        where CIRCULATE_PUMP_ID = #{circulatePumpId}
+    </update>
+
+    <delete id="deleteCirculatePumpRealById" parameterType="String">
+        delete from c_circulate_pump_real where CIRCULATE_PUMP_ID = #{circulatePumpId}
+    </delete>
+
+    <delete id="deleteCirculatePumpRealByIds" parameterType="String">
+        delete from c_circulate_pump_real where CIRCULATE_PUMP_ID in 
+        <foreach item="circulatePumpId" collection="array" open="(" separator="," close=")">
+            #{circulatePumpId}
+        </foreach>
+    </delete>
+    
+</mapper>

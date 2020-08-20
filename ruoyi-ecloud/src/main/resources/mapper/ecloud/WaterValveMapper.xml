@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ecloud.mapper.WaterValveMapper">
+    
+    <resultMap type="WaterValve" id="WaterValveResult">
+        <result property="waterValveId"    column="WATER_VALVE_ID"    />
+        <result property="stationId"    column="STATION_ID"    />
+        <result property="valveStatus"    column="VALVE_STATUS"    />
+        <result property="waterLevel"    column="WATER_LEVEL"    />
+        <result property="openValveLevel"    column="OPEN_VALVE_LEVEL"    />
+        <result property="closeValveLevel"    column="CLOSE_VALVE_LEVEL"    />
+        <result property="alarmUpperLimit"    column="ALARM_UPPER_LIMIT"    />
+        <result property="alarmLowLimit"    column="ALARM_LOW_LIMIT"    />
+        <result property="updateTime"    column="UPDATE_TIME"    />
+    </resultMap>
+
+    <sql id="selectWaterValveVo">
+        select WATER_VALVE_ID, STATION_ID, VALVE_STATUS, WATER_LEVEL, OPEN_VALVE_LEVEL, CLOSE_VALVE_LEVEL, ALARM_UPPER_LIMIT, ALARM_LOW_LIMIT, UPDATE_TIME from c_water_valve
+    </sql>
+
+    <select id="selectWaterValveList" parameterType="WaterValve" resultMap="WaterValveResult">
+        <include refid="selectWaterValveVo"/>
+        <where>  
+            <if test="stationId != null  and stationId != ''"> and STATION_ID = #{stationId}</if>
+
+        </where>
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &gt;  date_sub(now(),interval 10 minute)
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &lt;now()
+    </select>
+    
+    <select id="selectWaterValveById" parameterType="String" resultMap="WaterValveResult">
+        <include refid="selectWaterValveVo"/>
+        where WATER_VALVE_ID = #{waterValveId}
+    </select>
+        
+    <insert id="insertWaterValve" parameterType="WaterValve">
+        insert into c_water_valve
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="waterValveId != null">WATER_VALVE_ID,</if>
+            <if test="stationId != null">STATION_ID,</if>
+            <if test="valveStatus != null">VALVE_STATUS,</if>
+            <if test="waterLevel != null">WATER_LEVEL,</if>
+            <if test="openValveLevel != null">OPEN_VALVE_LEVEL,</if>
+            <if test="closeValveLevel != null">CLOSE_VALVE_LEVEL,</if>
+            <if test="alarmUpperLimit != null">ALARM_UPPER_LIMIT,</if>
+            <if test="alarmLowLimit != null">ALARM_LOW_LIMIT,</if>
+            <if test="updateTime != null">UPDATE_TIME,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="waterValveId != null">#{waterValveId},</if>
+            <if test="stationId != null">#{stationId},</if>
+            <if test="valveStatus != null">#{valveStatus},</if>
+            <if test="waterLevel != null">#{waterLevel},</if>
+            <if test="openValveLevel != null">#{openValveLevel},</if>
+            <if test="closeValveLevel != null">#{closeValveLevel},</if>
+            <if test="alarmUpperLimit != null">#{alarmUpperLimit},</if>
+            <if test="alarmLowLimit != null">#{alarmLowLimit},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWaterValve" parameterType="WaterValve">
+        update c_water_valve
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stationId != null">STATION_ID = #{stationId},</if>
+            <if test="valveStatus != null">VALVE_STATUS = #{valveStatus},</if>
+            <if test="waterLevel != null">WATER_LEVEL = #{waterLevel},</if>
+            <if test="openValveLevel != null">OPEN_VALVE_LEVEL = #{openValveLevel},</if>
+            <if test="closeValveLevel != null">CLOSE_VALVE_LEVEL = #{closeValveLevel},</if>
+            <if test="alarmUpperLimit != null">ALARM_UPPER_LIMIT = #{alarmUpperLimit},</if>
+            <if test="alarmLowLimit != null">ALARM_LOW_LIMIT = #{alarmLowLimit},</if>
+            <if test="updateTime != null">UPDATE_TIME = #{updateTime},</if>
+        </trim>
+        where WATER_VALVE_ID = #{waterValveId}
+    </update>
+
+    <delete id="deleteWaterValveById" parameterType="String">
+        delete from c_water_valve where WATER_VALVE_ID = #{waterValveId}
+    </delete>
+
+    <delete id="deleteWaterValveByIds" parameterType="String">
+        delete from c_water_valve where WATER_VALVE_ID in 
+        <foreach item="waterValveId" collection="array" open="(" separator="," close=")">
+            #{waterValveId}
+        </foreach>
+    </delete>
+    
+</mapper>

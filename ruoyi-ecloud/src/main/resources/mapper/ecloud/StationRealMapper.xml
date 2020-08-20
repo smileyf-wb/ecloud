@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ecloud.mapper.StationRealMapper">
+    
+    <resultMap type="StationReal" id="StationRealResult">
+        <result property="pkStationId"    column="PK_STATION_ID"    />
+        <result property="stationName"    column="STATION_NAME"    />
+        <result property="firstWaterT"    column="FIRST_WATER_T"    />
+        <result property="firstWaterP"    column="FIRST_WATER_P"    />
+        <result property="firstBackWaterTt"    column="FIRST_BACK_WATER_TT"    />
+        <result property="firstBackWaterP"    column="FIRST_BACK_WATER_P"    />
+        <result property="secondWaterT"    column="SECOND_WATER_T"    />
+        <result property="secondWaterP"    column="SECOND_WATER_P"    />
+        <result property="secondBackWaterT"    column="SECOND_BACK_WATER_T"    />
+        <result property="secondBackWaterP"    column="SECOND_BACK_WATER_P"    />
+        <result property="compensatioCalculation"    column="COMPENSATIO_CALCULATION"    />
+        <result property="updateTime"    column="UPDATE_TIME"    />
+        <result property="communication"    column="COMMUNICATION"    />
+        <result property="firstBackWaterT02"    column="FIRST_BACK_WATER_T02"    />
+    </resultMap>
+
+    <sql id="selectStationRealVo">
+        select PK_STATION_ID, STATION_NAME, FIRST_WATER_T, FIRST_WATER_P, FIRST_BACK_WATER_TT, FIRST_BACK_WATER_P, SECOND_WATER_T, SECOND_WATER_P, SECOND_BACK_WATER_T, SECOND_BACK_WATER_P, COMPENSATIO_CALCULATION, UPDATE_TIME, COMMUNICATION, FIRST_BACK_WATER_T02 from c_station_real
+    </sql>
+
+    <select id="selectStationRealList" parameterType="StationReal" resultMap="StationRealResult">
+        <include refid="selectStationRealVo"/>
+        <where>
+            <if test="projectId != null  and projectId != ''"> and PROJECT_ID =#{projectId}</if>
+        </where>
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &gt;  date_sub(now(),interval 10 minute)
+        and
+        STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%i:%s') &lt;now()
+    </select>
+    
+    <select id="selectStationRealById" parameterType="String" resultMap="StationRealResult">
+        <include refid="selectStationRealVo"/>
+        where PK_STATION_ID = #{pkStationId}
+    </select>
+        
+    <insert id="insertStationReal" parameterType="StationReal">
+        insert into c_station_real
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkStationId != null">PK_STATION_ID,</if>
+            <if test="projectId != null">PROJECT_ID,</if>
+            <if test="stationName != null">STATION_NAME,</if>
+            <if test="firstWaterT != null">FIRST_WATER_T,</if>
+            <if test="firstWaterP != null">FIRST_WATER_P,</if>
+            <if test="firstBackWaterTt != null">FIRST_BACK_WATER_TT,</if>
+            <if test="firstBackWaterP != null">FIRST_BACK_WATER_P,</if>
+            <if test="secondWaterT != null">SECOND_WATER_T,</if>
+            <if test="secondWaterP != null">SECOND_WATER_P,</if>
+            <if test="secondBackWaterT != null">SECOND_BACK_WATER_T,</if>
+            <if test="secondBackWaterP != null">SECOND_BACK_WATER_P,</if>
+            <if test="compensatioCalculation != null">COMPENSATIO_CALCULATION,</if>
+            <if test="updateTime != null and updateTime != ''">UPDATE_TIME,</if>
+            <if test="communication != null">COMMUNICATION,</if>
+            <if test="firstBackWaterT02 != null">FIRST_BACK_WATER_T02,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkStationId != null">#{pkStationId},</if>
+            <if test="stationName != null">#{stationName},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="firstWaterT != null">#{firstWaterT},</if>
+            <if test="firstWaterP != null">#{firstWaterP},</if>
+            <if test="firstBackWaterTt != null">#{firstBackWaterTt},</if>
+            <if test="firstBackWaterP != null">#{firstBackWaterP},</if>
+            <if test="secondWaterT != null">#{secondWaterT},</if>
+            <if test="secondWaterP != null">#{secondWaterP},</if>
+            <if test="secondBackWaterT != null">#{secondBackWaterT},</if>
+            <if test="secondBackWaterP != null">#{secondBackWaterP},</if>
+            <if test="compensatioCalculation != null">#{compensatioCalculation},</if>
+            <if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+            <if test="communication != null">#{communication},</if>
+            <if test="firstBackWaterT02 != null">#{firstBackWaterT02},</if>
+         </trim>
+    </insert>
+
+    <update id="updateStationReal" parameterType="StationReal">
+        update c_station_real
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="stationName != null">STATION_NAME = #{stationName},</if>
+            <if test="firstWaterT != null">FIRST_WATER_T = #{firstWaterT},</if>
+            <if test="firstWaterP != null">FIRST_WATER_P = #{firstWaterP},</if>
+            <if test="firstBackWaterTt != null">FIRST_BACK_WATER_TT = #{firstBackWaterTt},</if>
+            <if test="firstBackWaterP != null">FIRST_BACK_WATER_P = #{firstBackWaterP},</if>
+            <if test="secondWaterT != null">SECOND_WATER_T = #{secondWaterT},</if>
+            <if test="secondWaterP != null">SECOND_WATER_P = #{secondWaterP},</if>
+            <if test="secondBackWaterT != null">SECOND_BACK_WATER_T = #{secondBackWaterT},</if>
+            <if test="secondBackWaterP != null">SECOND_BACK_WATER_P = #{secondBackWaterP},</if>
+            <if test="compensatioCalculation != null">COMPENSATIO_CALCULATION = #{compensatioCalculation},</if>
+            <if test="updateTime != null and updateTime != ''">UPDATE_TIME = #{updateTime},</if>
+            <if test="communication != null">COMMUNICATION = #{communication},</if>
+            <if test="firstBackWaterT02 != null">FIRST_BACK_WATER_T02 = #{firstBackWaterT02},</if>
+        </trim>
+        where PK_STATION_ID = #{pkStationId}
+    </update>
+
+    <delete id="deleteStationRealById" parameterType="String">
+        delete from c_station_real where PK_STATION_ID = #{pkStationId}
+    </delete>
+
+    <delete id="deleteStationRealByIds" parameterType="String">
+        delete from c_station_real where PK_STATION_ID in 
+        <foreach item="pkStationId" collection="array" open="(" separator="," close=")">
+            #{pkStationId}
+        </foreach>
+    </delete>
+    
+</mapper>
